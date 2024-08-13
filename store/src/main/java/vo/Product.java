@@ -3,6 +3,18 @@ package vo;
 import java.util.Date;
 import java.util.List;
 
+/*
+ * Product는 상품정보를 표현하는 클래스다.
+ * 
+ * Product는 상품의 카테고리정보를 표현하는 Category객체를 포함한다.
+ * Product는 상품의 제조회사정보를 표현하는 Company객체를 포함한다.
+ * Product는 상품의 상태정보를 표현하는 Status객체를 포함한다.
+ * Product는 상품의 추가혜택정보를 표현하는 List<Benefit>객체를 포함한다.
+ * 
+ * Product는 상품정보와 관련된 다양한 메소드를 제공한다.
+ *  + 상품의 설명의 줄바꿈문자를 <br>태그로 치환해서 제공하는 메소드
+ *  + 
+ */
 public class Product {
 
 	private int no;
@@ -69,6 +81,10 @@ public class Product {
 		this.stock = stock;
 	}
 
+	/**
+	 * 텍스트의 줄바꿈문자를 br 태그로 변환해서 반환하는 메소드
+	 * @return br태그가 포함된 문자열
+	 */
 	public String getHtmlDescription() {
 		return description.replace(System.lineSeparator(), "<br>");
 	}
@@ -128,7 +144,28 @@ public class Product {
 	public void setBenefits(List<Benefit> benefits) {
 		this.benefits = benefits;
 	}
+	
+	public boolean hasCategory(int categoryNo) {
+		return categoryNo == category.getNo();
+	}
+	
+	public boolean hasCompany(int companyNo) {
+		return companyNo == company.getNo();
+	}
+	
+	public boolean hasStatus(int statusNo) {
+		return statusNo == status.getNo();
+	}
 
+	public boolean hasBenefit(int benefitNo) {
+		for (Benefit benefit : benefits) {
+			if (benefit.getNo() == benefitNo) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "Product [no=" + no + ", name=" + name + ", price=" + price + ", discountPrice=" + discountPrice

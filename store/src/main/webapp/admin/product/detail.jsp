@@ -139,8 +139,8 @@
 		</tbody>
 	</table>
 	<div class="text-end">
-		<a href="modifyForm.jsp" class="btn btn-warning">수정</a>
-		<a href="delete.jsp" class="btn btn-danger">삭제</a>
+		<a href="modify-form.jsp?no=<%=product.getNo() %>" class="btn btn-warning">수정</a>
+		<a href="delete.jsp?no<%=product.getNo() %>" class="btn btn-danger">삭제</a>
 		<a href="home.jsp" class="btn btn-primary">목록</a>
 	</div>
 </div>

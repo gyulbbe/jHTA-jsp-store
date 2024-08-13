@@ -17,6 +17,69 @@ import vo.Status;
 
 public class ProductDao {
 
+	/**
+	 * 상품번호에 해당하는 혜택정보를 삭제시킨다.
+	 * @param productNo 상품번호
+	 * @throws SQLException
+	 */
+	public void deleteBenefitsByProductNo(int productNo) throws SQLException {
+		String sql = """
+			delete from store_product_benefits
+			where product_no = ?	
+		""";
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, productNo);
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		con.close();
+	}
+	
+	/**
+	 * 변경된 정보가 반영된 상품정보를 전달받아서 테이블에 반영시킨다.
+	 * @param product 변경된 정보가 반영된 Product 객체
+	 * @throws SQLException
+	 */
+	public void updateProduct(Product product) throws SQLException {
+		String sql = """
+			update store_products
+			set product_name = ?
+				, product_price = ?
+				, product_discount_price = ?
+				, product_stock = ?
+				, product_description = ?
+				, product_category_no = ?
+				, product_company_no = ?
+				, product_status_no = ?
+				, product_updated_date = sysdate
+			where product_no = ?
+		""";
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setString(1, product.getName());
+		pstmt.setInt(2, product.getPrice());
+		pstmt.setInt(3, product.getDiscountPrice());
+		pstmt.setInt(4, product.getStock());
+		pstmt.setString(5, product.getDescription());
+		pstmt.setInt(6, product.getCategory().getNo());
+		pstmt.setInt(7, product.getCompany().getNo());
+		pstmt.setInt(8, product.getStatus().getNo());
+		pstmt.setInt(9, product.getNo());
+		
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		con.close();
+	}
+	
+	/**
+	 * 전체 상품갯수를 조회해서 반환한다.
+	 * @return 상품갯수
+	 * @throws SQLException
+	 */
 	public int getTotalRows() throws SQLException {
 		String sql = """
 			select count(*)
@@ -111,6 +174,11 @@ public class ProductDao {
 		return productNo;
 	}
 	
+	/**
+	 * 새 상품정보를 전달받아서 테이블에 저장시킨다.
+	 * @param product 새 상품정보
+	 * @throws SQLException
+	 */
 	public void insertProduct(Product product) throws SQLException {
 		String sql = """
 			insert into STORE_PRODUCTS
@@ -144,6 +212,11 @@ public class ProductDao {
 		con.close();
 	}
 	
+	/**
+	 * 상ㅇ품 추가 혜택정보를 전달받아서 테이블에 저장시킨다.
+	 * @param productBenefit 상품 추가혜택정보(상품번호, 혜택번호 포함)
+	 * @throws SQLException
+	 */
 	public void insertProductBenefit(ProductBenefit productBenefit) throws SQLException {
 		String sql = """
 			insert into store_product_benefits
@@ -163,6 +236,12 @@ public class ProductDao {
 		con.close();
 	}
 	
+	/**
+	 * 상품번호를 전달받아서 해당 상품의 상세정보를 조회해서 반환한다.
+	 * @param productNo 조회할 상품의 번호
+	 * @return 해당하는 상품 상세정보
+	 * @throws SQLException
+	 */
 	public Product getProductByNo(int productNo) throws SQLException {
 		String sql = """
 			SELECT p.product_no

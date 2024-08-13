@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.text.StringEscapeUtils"%>
 <%@page import="java.util.List"%>
 <%@page import="vo.Benefit"%>
 <%@page import="dao.BenefitDao"%>
@@ -89,7 +90,7 @@
 %>
 			<tr>
 				<th>이름</th>
-				<td><%=product.getName() %></td>
+				<td><%=StringEscapeUtils.escapeHtml4(product.getName()) %></td>
 				<th>번호</th>
 				<td><%=product.getNo() %></td>
 			</tr>
@@ -119,7 +120,7 @@
 			</tr>
 			<tr>
 				<th>설명</th>
-				<td colspan="3"><%=product.getHtmlDescription() %></td>
+				<td colspan="3"><%=StringEscapeUtils.escapeHtml4(product.getDescription()) %></td>
 			</tr>
 			<tr>
 				<th>추가혜택</th>

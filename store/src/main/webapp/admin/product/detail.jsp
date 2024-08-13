@@ -1,3 +1,9 @@
+<%@page import="java.util.List"%>
+<%@page import="vo.Benefit"%>
+<%@page import="dao.BenefitDao"%>
+<%@page import="vo.Product"%>
+<%@page import="dao.ProductDao"%>
+<%@page import="util.Utils"%>
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8" %>
 <!doctype html>
 <html lang="ko">
@@ -24,6 +30,36 @@
 <div class="container mt-4 mt-5">
 	<h1>상품 상세정보</h1>
 	
+<%--
+	요청 URL
+		http://localhost/store/admin/product/detail.jsp?no=xxx
+	요청 URI
+		/store/admin/product/detail.jsp
+	쿼리스트링
+		no=xxx
+		
+	요청파라미터 정보
+		name		value		
+		---------------------------------
+		"no"		"xxx"		상품번호
+--%>
+
+<%
+	int productNo = Utils.toInt(request.getParameter("no"));
+	// 요청파라미터로 전달받은 상품번호가 유효하지 않으면 home.jsp를 재욧청하는 URL을 응답으로 보낸다.
+	if (productNo == 0) {
+		response.sendRedirect("home.jsp?error");
+		return;
+	}
+	
+	// 2. 요청파라미터로 전달받은 상품번호에 해당하는 상품상세정보를 조회한다.
+	ProductDao productDao = new ProductDao();
+	Product product = productDao.getProductByNo(productNo);
+	
+	// 3. 요청파라미터로 전달받은 상품의 추가혜택정보를 조회한다.
+	List<Benefit> benefits = productDao.getBenefitByProductNo(productNo);
+%>
+	
 	<table class="table table-bordered">
 		<colgroup>
 			<col width="15%">
@@ -40,47 +76,66 @@
 			</tr>
 		</thead>
 		<tbody>
+<%
+	if (product == null){
+%>
+			<tr>
+				<td class="text-center" colspan="4">
+					상품정보가 존재하지 않습니다.
+				</td>
+			</tr>
+<%
+	} else {
+%>
 			<tr>
 				<th>이름</th>
-				<td>LG그램 노트북</td>
+				<td><%=product.getName() %></td>
 				<th>번호</th>
-				<td>10</td>
+				<td><%=product.getNo() %></td>
 			</tr>
 			<tr>
 				<th>카테고리</th>
-				<td>컴퓨터/노트북</td>
+				<td><%=product.getCategory().getName() %></td>
 				<th>제조회사</th>
-				<td>LG전자</td>
+				<td><%=product.getCompany().getName() %></td>
 			</tr>
 			<tr>
 				<th>가격</th>
-				<td>2,000,000 원</td>
+				<td><%=Utils.toCurrency(product.getPrice()) %> 원</td>
 				<th>할인가격</th>
-				<td>1,800,000 원</td>
+				<td><%=Utils.toCurrency(product.getDiscountPrice()) %> 원</td>
 			</tr>
 			<tr>
 				<th>재고수량</th>
-				<td>10</td>
+				<td><%=product.getStock() %></td>
 				<th>상태</th>
-				<td>판매중</td>
+				<td><%=product.getStatus().getName() %></td>
 			</tr>
 			<tr>
 				<th>등록일자</th>
-				<td>2024-07-01</td>
+				<td><%=product.getCreatedDate() %></td>
 				<th>수정일자</th>
-				<td>2024-07-01</td>
+				<td><%=Utils.nullToBlank(product.getUpdatedDate()) %></td>
 			</tr>
 			<tr>
 				<th>설명</th>
-				<td colspan="3">짱 좋은 놋북!</td>
+				<td colspan="3"><%=product.getHtmlDescription() %></td>
 			</tr>
 			<tr>
 				<th>추가혜택</th>
 				<td colspan="3">
-					<span class="badge bg-success">무료배송</span>
-					<span class="badge bg-success">당일배송</span>
+<%
+		for(Benefit b : benefits) {
+%>
+					<span class="badge bg-success"><%=b.getName() %></span>				
+<%
+		}
+%>
 				</td>
 			</tr>
+<%
+	}
+%>
 		</tbody>
 	</table>
 	<div class="text-end">

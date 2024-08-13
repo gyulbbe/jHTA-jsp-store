@@ -27,6 +27,7 @@ public class Product {
 		this.no = no;
 	}
 
+	
 
 	public int getNo() {
 		return no;
@@ -68,6 +69,10 @@ public class Product {
 		this.stock = stock;
 	}
 
+	public String getHtmlDescription() {
+		return description.replace(System.lineSeparator(), "<br>");
+	}
+	
 	public String getDescription() {
 		return description;
 	}

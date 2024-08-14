@@ -16,18 +16,10 @@
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-	<div class="container-fluid">
-		<ul class="navbar-nav">
-			<li class="nav-item">
-				<a class="nav-link" href="/store/index.jsp">홈</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link active" href="/store/admin/product/home.jsp">상품관리</a>
-			</li>
-		</ul>
-	</div>
-</nav>
+<%
+	String menu = "상품관리";
+%>
+<%@ include file="../../common/nav.jsp" %>
 <div class="container mt-4 mt-5">
 	<h1>상품 상세정보</h1>
 	

@@ -120,7 +120,7 @@
 			</tr>
 			<tr>
 				<th>설명</th>
-				<td colspan="3"><%=StringEscapeUtils.escapeHtml4(product.getDescription()) %></td>
+				<td colspan="3"><%=product.getHtmlDescription() %></td>
 			</tr>
 			<tr>
 				<th>추가혜택</th>

@@ -10,9 +10,21 @@
 				<a class="nav-link <%="홈".equals(menu) ? "active" : "" %>" href="/store/index.jsp">홈</a>
 			</li>
 			<li class="nav-item">
+				<a class="nav-link <%="게시판".equals(menu) ? "active" : "" %>" href="/store/board/list.jsp">게시판</a>
+			</li>
+			<li class="nav-item">
 				<a class="nav-link <%="상품관리".equals(menu) ? "active" : "" %>" href="/store/admin/product/home.jsp">상품관리</a>
 			</li>
 		</ul>
+<%
+	if (loginedUserName != null) {
+%>
+	<span class="navbar-text">
+		<strong class="fw-bold text-white"><%=loginedUserName %></strong>님 환영합니다.
+	</span>
+<%
+	}
+%>
 		<ul class="navbar-nav">
 <%
 	if (loginedUserId == null) {

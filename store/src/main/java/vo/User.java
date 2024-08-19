@@ -14,6 +14,10 @@ public class User {
 	private Date updatedDate;
 	
 	public User() {}
+	
+	public User(int no) {
+		this.no = no;
+	}
 
 	public int getNo() {
 		return no;

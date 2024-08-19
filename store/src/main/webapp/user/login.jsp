@@ -57,8 +57,12 @@
 	}
 	
 	// 4. HttpSession객체에 인증된 사용자정보를 저장한다.
+	session.setAttribute("USERNO", user.getNo());
 	session.setAttribute("USERID", user.getId());
 	session.setAttribute("USERNAME", user.getName());
+	
+	//LoginUser loginUser = new LoginUser(user.getNo(), user.getId(), user.getName());
+	//session.setAttribute("LOGIN-USER", loginUser);
 	
 	// 5. index.jsp를 재요청하는 URL을 응답으로 보낸다.
 	response.sendRedirect("../index.jsp");

@@ -15,7 +15,31 @@
 <%@ include file="../common/nav.jsp" %>
 <div class="container mt-4 mb-5">
 	<h1>로그인폼</h1>
+<%
+	String message = null;
+
+	if (request.getParameter("invalid") != null) {
+		message = "아이디 혹은 비밀번호가 올바르지 않습니다.";
+	}
+
+	if (request.getParameter("disabled") != null) {
+		message = "사용이 정지된 사용자는 로그인 할 수 없습니다.";
+	}
 	
+	if (request.getParameter("deny") != null) {
+		message = "로그인이 필요한 서비스입니다.";
+	}
+%>
+
+<%
+	if (message != null) {
+%>
+	<div class="alert alert-danger">
+		<%=message %>
+	</div>
+<%
+	}
+%>
 	<p>아이디와 비밀번호를 입력하고 로그인하세요</p>
 	<form class="border bg-light p-3" method="post" action="login.jsp">
 		<div class="mb-3">

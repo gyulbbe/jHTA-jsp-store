@@ -13,6 +13,46 @@ import vo.User;
 
 public class BoardDao {
 
+	/**
+	 * 변경된 정보가 반영된 게시글 정보를 전달받아서 테이블에 반영시킨다.
+	 * @param board 변경된 정보가 반영된 게시글 정보
+	 * @throws SQLException
+	 */
+	public void updateBoard(Board board) throws SQLException {
+		String sql = """
+			update store_boards
+			set board_title = ?
+				, board_content = ?
+				, board_view_cnt = ?
+				, board_like_cnt = ?
+				, board_reply_cnt = ?
+				, board_deleted = ?
+				, board_updated_date = sysdate
+			where board_no = ?
+		""";
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setString(1, board.getTitle());
+		pstmt.setString(2, board.getContent());
+		pstmt.setInt(3, board.getViewCnt());
+		pstmt.setInt(4, board.getLikeCnt());
+		pstmt.setInt(5, board.getReplyCnt());
+		pstmt.setString(6, board.getDeleted());
+		pstmt.setInt(7, board.getNo());
+		
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		con.close();
+	}
+	
+	/**
+	 * 전달받은 게시글 번호에 대한 게시글정보를 조회해서 반환한다.
+	 * @param no 조회할 게시글 번호
+	 * @return 게시글정보, null이 반환될 수 있다.
+	 * @throws SQLException
+	 */
 	public Board getBoardByNo(int no) throws SQLException {
 		String sql = """
 			select B.board_no
@@ -167,6 +207,52 @@ public class BoardDao {
 		pstmt.setString(2, board.getContent());
 		pstmt.setInt(3, board.getUser().getNo());
 		
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		con.close();
+	}
+	
+	/**
+	 * 게시글번호, 사용자번호를 전달받아서 "좋아요 테이블"에 추가한다.
+	 * @param boardNo 게시글번호
+	 * @param userNo 사용자번호
+	 * @throws SQLException
+	 */
+	public void insertLike(int boardNo, int userNo) throws SQLException {
+		String sql = """
+			insert into STORE_BOARD_LIKES
+			(BOARD_NO, USER_NO)
+			values
+			(?, ?)
+		""";
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, boardNo);
+		pstmt.setInt(2, userNo);
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		con.close();
+	}
+	
+	/**
+	 * 게시글번호, 사용자번호를 전달받아서 "좋아요 테이블"에서 삭제한다.
+	 * @param boardNo 게시글번호
+	 * @param userNo 사용자번호
+	 * @throws SQLException
+	 */
+	public void deleteLike(int boardNo, int userNo) throws SQLException {
+		String sql = """
+			delete from store_board_likes
+			where board_no = ? and user_no = ?
+		""";
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, boardNo);
+		pstmt.setInt(2, userNo);
 		pstmt.executeUpdate();
 		
 		pstmt.close();

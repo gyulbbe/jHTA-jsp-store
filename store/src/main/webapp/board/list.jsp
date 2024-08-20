@@ -75,11 +75,12 @@
 		</thead>
 		<tbody>
 <%
+	int rowNumber = pagination.getBegin();
 	for (Board board : boards) {
 %>
 			<tr>
-				<td><%=board.getNo() %></td>
-				<td><a href="detail.jsp?no=<%=board.getNo() %>&page=<%=pageNo %>"><%=board.getTitle() %></a></td>
+				<td><%=rowNumber++ %></td>
+				<td><a href="hit.jsp?no=<%=board.getNo() %>&page=<%=pageNo %>"><%=board.getTitle() %></a></td>
 				<td><%=board.getUser().getName() %></td>
 				<td><%=Utils.toCurrency(board.getViewCnt()) %></td>
 				<td><%=Utils.toCurrency(board.getLikeCnt()) %></td>

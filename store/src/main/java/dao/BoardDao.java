@@ -9,6 +9,7 @@ import java.util.List;
 
 import util.ConnectionUtils;
 import vo.Board;
+import vo.Like;
 import vo.User;
 
 public class BoardDao {
@@ -257,5 +258,31 @@ public class BoardDao {
 		
 		pstmt.close();
 		con.close();
+	}
+	
+	public Like getLikeByBoardNoAndUserNo(int boardNo, int userNo) throws SQLException {
+		String sql = """
+			select *
+			from store_board_likes
+			where board_no = ? and user_no = ?
+		""";
+		
+		Like like = null;
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, boardNo);
+		pstmt.setInt(2, userNo);
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()) {
+			like = new Like();
+			like.setBoardNo(rs.getInt("board_no"));
+			like.setUserNo(rs.getInt("user_no"));
+		}
+		rs.close();
+		pstmt.close();
+		con.close();
+		
+		return like;
 	}
 }

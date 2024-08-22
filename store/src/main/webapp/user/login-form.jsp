@@ -44,11 +44,11 @@
 	<form class="border bg-light p-3" method="post" action="login.jsp">
 		<div class="mb-3">
 			<label class="form-label">아이디</label>
-			<input class="form-control" type="text" name="id" />
+			<input class="form-control" type="text" name="id" value="12" />
 		</div>
 		<div class="mb-3">
 			<label class="form-label">비밀번호</label>
-			<input class="form-control" type="password" name="password" />
+			<input class="form-control" type="password" name="password" value="zxcv1234" />
 		</div>
 		<div class="text-end">
 			<button type="submit" class="btn btn-primary">로그인</button>

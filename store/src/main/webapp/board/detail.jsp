@@ -1,3 +1,6 @@
+<%@page import="vo.Reply"%>
+<%@page import="java.util.List"%>
+<%@page import="dao.ReplyDao"%>
 <%@page import="vo.Like"%>
 <%@page import="vo.Board"%>
 <%@page import="dao.BoardDao"%>
@@ -173,6 +176,69 @@
 %>
 		
 	</div>
+<%
+	if (loginedUserId != null) {
+%>
+	<form class="border bg-light p-3 mt-3" method="post" action="insert-reply.jsp">
+		<input type="hidden" name="bno" value="<%=board.getNo() %>" />
+		<div class="mb-3">
+			<label class="form-label">내용</label>
+			<textarea rows="3" cols="form-control" name="content"></textarea>
+		</div>
+		<div class="text-end">
+			<button type="submit" class="btn btn-primary btn-sm">등록</button>
+		</div>
+	</form>
+<%
+	}
+%>
+	
+<%
+	// 게시글의 댓글 조회하기
+	ReplyDao replyDao = new ReplyDao();
+	List<Reply> replyList = replyDao.getReplyListByBoardNo(board.getNo());
+%>
+	<div class="mt-3">
+<%
+	int userNo = -1;	// 로그인하지 않았다면 userNo는 -1
+	if (session.getAttribute("USERNO") != null) {
+		userNo = (Integer) session.getAttribute("USERNO");
+	}
+	
+	for (Reply reply : replyList) {
+		boolean canReplyModify = false;	
+		if (userNo == reply.getUser().getNo()) {
+			canReplyModify = true;
+		}
+%>
+      <div class="border p-2 mb-2">
+         <div class="small d-flex justify-content-between">
+            <div>
+               <span><%=reply.getUser().getName() %></span>
+               <span><%=reply.getCreatedDate() %></span>
+            </div>
+            <div>
+<%
+		if (canReplyModify) {
+%>
+				<a href="modify-reply-form.jsp" class="btn btn-outline-dark btn-sm">수정</a>
+				<a href="delete-reply.jsp?rno=<%=reply.getNo()%>&bno=<%=board.getNo()%>&page=<%=pageNo%>" class="btn btn-outline-dark btn-sm">삭제</a>
+<%
+		} else {
+%>
+				<a href="modify-reply-form.jsp" class="btn btn-outline-dark btn-sm disabled">수정</a>
+				<a href="delete-reply.jsp" class="btn btn-outline-dark btn-sm disabled">삭제</a>
+<%
+		}
+%>
+            </div>
+         </div>
+         <p class="mb-0"><%=reply.getContent() %></p>
+      </div>
+<%
+	}
+%>
+   </div>
 </div>
 </body>
 </html>

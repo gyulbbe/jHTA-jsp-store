@@ -15,6 +15,9 @@
 			<li class="nav-item">
 				<a class="nav-link <%="상품관리".equals(menu) ? "active" : "" %>" href="/store/admin/product/home.jsp">상품관리</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link <%="문의".equals(menu) ? "active" : "" %>" href="/store/qna/list.jsp">문의</a>
+			</li>
 		</ul>
 <%
 	if (loginedUserName != null) {

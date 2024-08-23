@@ -10,13 +10,13 @@
 				<a class="nav-link <%="홈".equals(menu) ? "active" : "" %>" href="/store/index.jsp">홈</a>
 			</li>
 			<li class="nav-item">
+				<a class="nav-link <%="상품".equals(menu) ? "active" : "" %>" href="/store/product/list.jsp">상품</a>
+			</li>
+			<li class="nav-item">
 				<a class="nav-link <%="게시판".equals(menu) ? "active" : "" %>" href="/store/board/list.jsp">게시판</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link <%="상품관리".equals(menu) ? "active" : "" %>" href="/store/admin/product/home.jsp">상품관리</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link <%="문의".equals(menu) ? "active" : "" %>" href="/store/qna/list.jsp">문의</a>
 			</li>
 		</ul>
 <%
@@ -42,6 +42,12 @@
 <%
 	} else {
 %>
+			<li class="nav-item">
+				<a class="nav-link <%="문의".equals(menu) ? "active" : "" %>" href="/store/qna/list.jsp">문의</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link <%="장바구니".equals(menu) ? "active" : "" %>" href="/store/cart/list.jsp">장바구니</a>
+			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="/store/user/logout.jsp">로그아웃</a>
 			</li>

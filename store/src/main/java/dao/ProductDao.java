@@ -111,8 +111,14 @@ public class ProductDao {
 						, p.product_discount_price
 						, s.product_status_no
 						, s.product_status_name
-				from store_products p, store_product_status s
+						, ca.PRODUCT_CATEGORY_NO
+						, ca.PRODUCT_CATEGORY_NAME
+						, co.PRODUCT_COMPANY_NO
+						, co.PRODUCT_COMPANY_NAME
+				from store_products p, store_product_status s, STORE_PRODUCT_CATEGORIES ca, STORE_PRODUCT_COMPANIES co
 				where p.product_status_no = s.product_status_no
+				and ca.PRODUCT_CATEGORY_NO = p.PRODUCT_CATEGORY_NO
+				and co.PRODUCT_COMPANY_NO = p.PRODUCT_COMPANY_NO
 				)
 			where rownumber between ? and ?
 		""";
@@ -134,8 +140,17 @@ public class ProductDao {
 		Status status = new Status();
 		status.setNo(rs.getInt("product_status_no"));
 		status.setName(rs.getString("product_status_name"));
-		
 		product.setStatus(status);
+		
+		Category category = new Category();
+		category.setNo(rs.getInt("PRODUCT_CATEGORY_NO"));
+		category.setName(rs.getString("PRODUCT_CATEGORY_NAME"));
+		product.setCategory(category);
+		
+		Company company = new Company();
+		company.setNo(rs.getInt("PRODUCT_COMPANY_NO"));
+		company.setName(rs.getString("PRODUCT_COMPANY_NAME"));
+		product.setCompany(company);
 		
 		products.add(product);
 	}

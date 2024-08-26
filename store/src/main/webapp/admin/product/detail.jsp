@@ -81,6 +81,12 @@
 	} else {
 %>
 			<tr>
+				<th>상품사진</th>
+				<td colspan="3">
+					<img src="/store/resources/photo/<%=product.getFilename() %>" />
+				</td>
+			</tr>
+			<tr>
 				<th>이름</th>
 				<td><%=StringEscapeUtils.escapeHtml4(product.getName()) %></td>
 				<th>번호</th>

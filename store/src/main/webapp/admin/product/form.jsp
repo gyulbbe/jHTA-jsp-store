@@ -18,6 +18,9 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<%
+	String menu = "상품관리";
+%>
 <%@ include file="../../common/nav.jsp" %>
 <div class="container mt-4 mb-5">
 	<h1>새 상품 입력폼</h1>
@@ -34,7 +37,8 @@
 	List<Benefit> benefits = benefitDao.getAllBenefits();
 %>
 	
-	<form class="border bg-light p-3" method="post" action="insert.jsp">
+	<form class="border bg-light p-3" method="post" action="insert"
+		enctype="multipart/form-data">
 		<div class="mb-3">
 			<label class="form-label">상품 카테고리</label>
 			<select class="form-select" name="catNo">
@@ -95,6 +99,10 @@
 		<div class="mb-3">
 			<label class="form-label">상품 설명</label>
 			<textarea class="form-control" rows="5" name="description"></textarea>
+		</div>
+		<div class="mb-3">
+			<label class="form-label">상품 사진</label>
+			<input type="file" class="form-control" name="photofile">
 		</div>
 		<div class="mb-3">
 			<label class="form-label">추가 혜택</label>

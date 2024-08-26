@@ -33,13 +33,12 @@ public class Product {
 	private Status status;
 	// Product와 Benefit는 M:N관계다.
 	private List<Benefit> benefits;
+	private String filename;
 	
 	public Product () {}
 	public Product (int no) {
 		this.no = no;
 	}
-
-	
 
 	public int getNo() {
 		return no;
@@ -172,5 +171,11 @@ public class Product {
 				+ ", stock=" + stock + ", description=" + description + ", createdDate=" + createdDate + ", updatedDate="
 				+ updatedDate + ", category=" + category + ", company=" + company + ", status=" + status + ", benefits="
 				+ benefits + "]";
+	}
+	public String getFilename() {
+		return filename;
+	}
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 }

@@ -205,9 +205,10 @@ public class ProductDao {
 			, PRODUCT_DESCRIPTION
 			, PRODUCT_CATEGORY_NO
 			, PRODUCT_COMPANY_NO
-			, PRODUCT_STATUS_NO)
+			, PRODUCT_STATUS_NO
+			, PRODUCT_FILENAME)
 			values
-			(?, ?, ?, ?, ?, ?, ?, ?, ?)
+			(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		""";
 		
 		Connection con = ConnectionUtils.getConnection();
@@ -221,6 +222,7 @@ public class ProductDao {
 		pstmt.setInt(7, product.getCategory().getNo());
 		pstmt.setInt(8, product.getCompany().getNo());
 		pstmt.setInt(9, product.getStatus().getNo());
+		pstmt.setString(10, product.getFilename());
 		pstmt.executeUpdate();
 		
 		pstmt.close();
@@ -273,6 +275,7 @@ public class ProductDao {
 			    , co.product_company_name
 			    , st.product_status_no
 			    , st.product_status_name
+			    , p.product_filename
 			FROM store_products p
 			    , store_product_categories ca
 			    , store_product_companies co
@@ -314,6 +317,8 @@ public class ProductDao {
 			status.setNo(rs.getInt("product_status_no"));
 			status.setName(rs.getString("product_status_name"));
 			product.setStatus(status);
+			
+			product.setFilename(rs.getString("product_filename"));
 		}
 		rs.close();
 		pstmt.close();

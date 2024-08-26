@@ -16,6 +16,7 @@ public class Qna {
 	private Date answeredDate;
 	private int userNo;
 	private Category category;
+	private String filename;
 	
 	public Qna() {}
 
@@ -113,5 +114,25 @@ public class Qna {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+	
+	public String getOriginalFilename() {
+		return filename.substring(13);
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	@Override
+	public String toString() {
+		return "Qna [qnaNo=" + qnaNo + ", catNo=" + catNo + ", title=" + title + ", question=" + question + ", answer="
+				+ answer + ", status=" + status + ", deleted=" + deleted + ", createdDate=" + createdDate
+				+ ", updatedDate=" + updatedDate + ", answeredDate=" + answeredDate + ", userNo=" + userNo
+				+ ", category=" + category + ", filename=" + filename + "]";
 	}
 }

@@ -57,6 +57,24 @@
 				<td><%=qna.getAnsweredDate() %></td>
 			</tr>
 			<tr>
+				<th>첨부파일</th>
+				<td colspan="3">
+<%
+	if (qna.getFilename() != null) {
+%>
+		<span><%=qna.getOriginalFilename() %></span>
+		<a href="download?no=<%=qna.getQnaNo() %>" class="btn btn-success">다운로드</a>
+<%
+	} else {
+%>
+		없음
+<%
+	}
+%>
+				</td>
+			</tr>
+			
+			<tr>
 				<th>질문내용</th>
 				<td colspan="3"><%=qna.getQuestion() %></td>
 			</tr>

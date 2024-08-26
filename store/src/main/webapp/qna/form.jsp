@@ -25,7 +25,8 @@
 	QnaDao qnaDao = new QnaDao();
 	List<QnaCategory> qnaCategories = qnaDao.getAllQnaCategories();
 %>
-	<form class="border bg-light p-3" method="post" action="insert.jsp">
+	<form class="border bg-light p-3" method="post" action="insert"
+		enctype="multipart/form-data">
 		<div class="mb-3">
 			<label class="form-label">구분</label>
 			<select class="form-select" name="catNo">
@@ -50,6 +51,10 @@
 		<div class="mb-3">
 			<label class="form-label">질문내용</label>
 			<textarea class="form-control" name="question" rows="5"></textarea>
+		</div>
+		<div class="mb-3">
+			<label class="form-label">첨부파일</label>
+			<input type="file" class="form-control" name="upfile"></input>
 		</div>
 		<div class="text-end">
 			<button type="submit" class="btn btn-primary">등록</button>

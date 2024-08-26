@@ -28,6 +28,7 @@ public class QnaDao {
 					, B.CAT_NO
 					, B.CAT_NAME
 					, A.USER_NO
+					, A.QNA_FILENAME
 			from STORE_QNA_BOARDS A, STORE_QNA_CATEGORIES B
 			where QNA_NO = ?
 			AND A.CAT_NO = B. CAT_NO
@@ -51,6 +52,7 @@ public class QnaDao {
 			qna.setUpdatedDate(rs.getDate("QNA_UPDATED_DATE"));
 			qna.setAnsweredDate(rs.getDate("QNA_ANSWERED_DATE"));
 			qna.setUserNo(rs.getInt("USER_NO"));
+			qna.setFilename(rs.getString("qna_filename"));
 			
 			Category category = new Category();
 			
@@ -112,6 +114,7 @@ public class QnaDao {
 			qna.setStatus(rs.getString("qna_status"));
 			qna.setCreatedDate(rs.getDate("qna_created_date"));
 			qna.setAnsweredDate(rs.getDate("qna_answered_date"));
+			
 			qnas.add(qna);
 		}
 		return qnas;
@@ -143,17 +146,18 @@ public class QnaDao {
 	public void insertQna(Qna qna) throws SQLException {
 		String sql = """
 			insert into store_qna_boards
-			(qna_no, cat_no, qna_title, qna_question, user_no)
+			(qna_no, cat_no, qna_title, qna_question, user_no, QNA_FILENAME)
         	values
-			(store_qna_seq.nextval, ?, ?, ?, ?)
+			(store_qna_seq.nextval, ?, ?, ?, ?, ?)
 		""";
 		
 		Connection con = ConnectionUtils.getConnection();
 		PreparedStatement pstmt = con.prepareStatement(sql);
-		pstmt.setInt(1, qna.getCatNo());
+		pstmt.setInt(1, qna.getCategory().getNo());
 		pstmt.setString(2, qna.getTitle());
 		pstmt.setString(3, qna.getQuestion());
 		pstmt.setInt(4, qna.getUserNo());
+		pstmt.setString(5, qna.getFilename());
 		pstmt.executeUpdate();
 		
 		pstmt.close();

@@ -37,7 +37,7 @@
 	List<Benefit> benefits = benefitDao.getAllBenefits();
 %>
 	
-	<form class="border bg-light p-3" method="post" action="insert"
+	<form class="border bg-light p-3" method="post" action="insert.jsp"
 		enctype="multipart/form-data">
 		<div class="mb-3">
 			<label class="form-label">상품 카테고리</label>

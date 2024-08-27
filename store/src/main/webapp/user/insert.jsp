@@ -52,11 +52,17 @@
 	String sha256Password = DigestUtils.sha256Hex(password);
 	
 	// 4. User객체를 생성해서 요청파라미터값을 저장한다.
-	User user = new User();
-	user.setId(id);
-	user.setPassword(sha256Password);
-	user.setName(name);
-	user.setEmail(email);
+	//User user = new User();
+	//user.setId(id);
+	//user.setPassword(sha256Password);
+	//user.setName(name);
+	//user.setEmail(email);
+	User user = User.builder()
+					.id(id)
+					.password(password)
+					.name(name)
+					.email(email)
+					.build();
 	
 	// 5. UserDao객체의 insertUser() 메소드를 실행해서 데이터베이스에 저장한다.
 	userDao.insertUser(user);

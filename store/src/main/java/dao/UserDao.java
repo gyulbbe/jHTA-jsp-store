@@ -30,15 +30,25 @@ public class UserDao {
 		pstmt.setString(1, id);
 		ResultSet rs = pstmt.executeQuery();
 		while(rs.next()) {
-			user = new User();
-			user.setNo(rs.getInt("USER_NO"));
-			user.setId(rs.getString("USER_ID"));
-			user.setPassword(rs.getString("USER_PASSWORD"));
-			user.setName(rs.getString("USER_NAME"));
-			user.setEmail(rs.getString("USER_EMAIL"));
-			user.setDisabled(rs.getString("USER_DISABLED"));
-			user.setCreatedDate(rs.getDate("USER_CREATED_DATE"));
-			user.setUpdatedDate(rs.getDate("USER_UPDATED_DATE"));
+//			user = new User();
+//			user.setNo(rs.getInt("USER_NO"));
+//			user.setId(rs.getString("USER_ID"));
+//			user.setPassword(rs.getString("USER_PASSWORD"));
+//			user.setName(rs.getString("USER_NAME"));
+//			user.setEmail(rs.getString("USER_EMAIL"));
+//			user.setDisabled(rs.getString("USER_DISABLED"));
+//			user.setCreatedDate(rs.getDate("USER_CREATED_DATE"));
+//			user.setUpdatedDate(rs.getDate("USER_UPDATED_DATE"));
+			user = User.builder()
+					.no(rs.getInt("USER_NO"))
+					.id(rs.getString("USER_ID"))
+					.password(rs.getString("USER_PASSWORD"))
+					.name(rs.getString("USER_NAME"))
+					.email(rs.getString("USER_EMAIL"))
+					.disabled(rs.getString("USER_DISABLED"))
+					.createdDate(rs.getDate("USER_CREATED_DATE"))
+					.updatedDate(rs.getDate("USER_UPDATED_DATE"))
+					.build();
 		}
 		rs.close();
 		pstmt.close();

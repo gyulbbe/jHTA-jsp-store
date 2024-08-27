@@ -13,6 +13,56 @@ import vo.Product;
 
 public class CartDao {
 	
+	public void updateCartItem(Cart item) throws SQLException {
+		String sql = """
+			update store_cart_items
+			set
+				item_amount = ?
+				, item_updated_date = sysdate
+			where item_no = ?
+		""";
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, item.getAmount());
+		pstmt.setInt(2, item.getNo());
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		con.close();
+	}
+	
+	public Cart getCartItemByUserNoAndProductNo(int userNo, int productNo) throws SQLException {
+		String sql = """
+			select *
+			from store_cart_items
+			where user_no = ? and product_no = ?
+		""";
+		
+		Cart item = null;
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, userNo);
+		pstmt.setInt(2, productNo);
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()) {
+			item = new Cart();
+			item.setNo(rs.getInt("ITEM_NO"));
+			item.setAmount(rs.getInt("ITEM_AMOUNT"));
+			item.setPrice(rs.getInt("ITEM_PRICE"));
+			
+			Product product = new Product();
+			product.setNo(rs.getInt("PRODUCT_NO"));
+			item.setProduct(product);
+		}
+		rs.close();
+		pstmt.close();
+		con.close();
+		
+		return item;
+	}
+	
 	public void deleteCart(int cartNo) throws SQLException {
 		String sql = """
 			delete from STORE_CART_ITEMS

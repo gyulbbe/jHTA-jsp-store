@@ -73,15 +73,15 @@
 	int finalAmount = 0; // 최종 결재 금액
 	
 	for (Cart c : carts) {
-		int price = c.getProduct().getPrice();
-		int discountPrice = c.getProduct().getDiscountPrice();
-		int gap = price - discountPrice;
 		int amount = c.getAmount();
+		int price = c.getProduct().getPrice() * amount;
+		int discountPrice = c.getProduct().getDiscountPrice() * amount;
+		int gap = price - discountPrice;
 		
 		allPrice += price;
 		allAmount += amount;
 		allGap += gap;
-		finalAmount += discountPrice * amount;
+		finalAmount += discountPrice;
 		
 		String formatPrice = df.format(price);
 		String formatGap = df.format(gap);
@@ -115,7 +115,6 @@
 			<button type="submit" class="btn btn-outline-secondary btn-sm">전체삭제</button>
 			<button type="submit" class="btn btn-primary btn-sm float-end">주문하기</button>
 		</div>
-
 <%
 	}
 %>

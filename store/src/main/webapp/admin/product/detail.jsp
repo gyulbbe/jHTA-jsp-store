@@ -82,8 +82,14 @@
 %>
 			<tr>
 				<th>상품사진</th>
-				<td colspan="3">
-					<img src="/store/resources/photo/<%=product.getFilename() %>" />
+				<td>
+					<img src="/store/resources/photo/<%=product.getFilename() %>"
+						width="120" height="120" />
+				</td>
+				<th>상품사진</th>
+				<td>
+					<img src="../../resources/photo/<%=product.getFilename() %>"
+						width="120" height="120" />
 				</td>
 			</tr>
 			<tr>

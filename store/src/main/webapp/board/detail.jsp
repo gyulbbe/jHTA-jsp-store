@@ -1,3 +1,5 @@
+<%@page import="java.util.ArrayDeque"%>
+<%@page import="util.NestedReply"%>
 <%@page import="vo.Reply"%>
 <%@page import="java.util.List"%>
 <%@page import="dao.ReplyDao"%>
@@ -206,10 +208,7 @@
 	}
 	
 	for (Reply reply : replyList) {
-		boolean canReplyModify = false;	
-		if (userNo == reply.getUser().getNo()) {
-			canReplyModify = true;
-		}
+		boolean canReplyModify = userNo == reply.getUser().getNo();
 %>
       <div class="border p-2 mb-2">
          <div class="small d-flex justify-content-between">
@@ -234,11 +233,71 @@
             </div>
          </div>
          <p class="mb-0"><%=reply.getContent() %></p>
-      </div>
+         
+        <!-- 댓글의 답글 버튼 및 입력 폼 -->
+        <%
+        if (loginedUserId != null) {
+        %>
+        <div class="mt-2">
+            <button class="btn btn-sm btn-outline-primary" onclick="toggleNestedReplyForm(<%=reply.getNo()%>)">답글</button>
+            <form id="nestedReplyForm<%=reply.getNo()%>" class="mt-2" style="display:none;" method="post" action="insert-nested-reply.jsp">
+                <input type="hidden" name="bno" value="<%=board.getNo() %>" />
+                <input type="hidden" name="parentReplyNo" value="<%=reply.getNo() %>" />
+                <textarea class="form-control" rows="2" name="content" placeholder="답글을 입력하세요"></textarea>
+                <button type="submit" class="btn btn-primary btn-sm mt-1">답글 등록</button>
+            </form>
+        </div>
+        <%
+        }
+        %>
+        
+        <!-- 대댓글 목록 -->
+        <%
+        NestedReply nestedReply = new NestedReply();
+        ArrayDeque<Reply> stack = nestedReply.getNestedReplies(reply.getNo());
+        while (!stack.isEmpty()) {
+        	Reply nr = stack.pollLast();
+        	int moveRight = (nr.getDepth() - 1) * 20;
+		%>
+	    	<!-- 대댓글 조회 -->
+	        <div class="nested-reply mt-2" style="margin-left: <%=moveRight%>px;">
+	        	<div class="small d-flex justify-content-between">
+	            	<div>
+	                	<span><%=nr.getUser().getName() %></span>
+	                    <span><%=nr.getCreatedDate() %></span>
+	                </div>
+	                <div>
+	                    <a href="#" class="btn btn-outline-dark btn-sm">수정</a>
+	                    <a href="#" class="btn btn-outline-dark btn-sm">삭제</a>
+	                </div>
+	            </div>
+	            <p class="mb-0"><%=nr.getContent() %></p>
+	                
+	            <!-- 대댓글의 답글 버튼 및 입력 폼 -->
+	            <div class="mt-2">
+	                <button class="btn btn-sm btn-outline-primary" onclick="toggleNestedReplyForm('<%=nr.getNo()%>')">답글</button>
+	                <form id="nestedReplyForm<%=nr.getNo()%>" class="mt-2" style="display:none;" method="post" action="insert-nested-reply.jsp">
+	                    <input type="hidden" name="bno" value="<%=board.getNo() %>" />
+	                    <input type="hidden" name="parentReplyNo" value="<%=nr.getNo() %>" />
+	                    <textarea class="form-control" rows="2" name="content" placeholder="답글을 입력하세요"></textarea>
+	                    <button type="submit" class="btn btn-primary btn-sm mt-1">답글 등록</button>
+	                </form>
+	            </div>
+	        </div>
+	   <%
+        }
+        %>
+	</div>
 <%
 	}
 %>
-   </div>
+</div>
+<script>
+function toggleNestedReplyForm(replyId) {
+    var form = document.getElementById('nestedReplyForm' + replyId);
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>
 </div>
 </body>
 </html>

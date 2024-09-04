@@ -8,9 +8,12 @@ public class Reply {
 	private String content;
 	private Date createdDate;
 	private Date updatedDate;
+	private int depth;
+	private int parentNo;
 	
 	private Board board;
 	private User user;
+	
 	
 	public Reply() {}
 
@@ -60,5 +63,21 @@ public class Reply {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+
+	public int getParentNo() {
+		return parentNo;
+	}
+
+	public void setParentNo(int parentNo) {
+		this.parentNo = parentNo;
 	}
 }

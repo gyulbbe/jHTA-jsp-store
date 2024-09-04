@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +15,66 @@ import vo.User;
 
 public class ReplyDao {
 	
+	/**
+	 * 부모 댓글 번호로 자식 댓글리스트 오름차순
+	 * @param replyNo
+	 * @return 대댓글
+	 * @throws SQLException
+	 */
+	public ArrayDeque<Reply> getNestedRepliesByReplyNo(int replyNo) throws SQLException {
+		String sql = """
+			select r.REPLY_NO
+					, r.REPLY_CONTENT
+					, r.REPLY_CREATED_DATE
+					, r.REPLY_UPDATED_DATE
+					, r.REPLY_DEPTH
+					, r.PARENT_REPLY_NO
+					, u.USER_NAME
+			from STORE_BOARD_REPLYES r
+			join STORE_USERS u on r.USER_NO = u.USER_NO
+			where PARENT_REPLY_NO = ?
+			and PARENT_REPLY_NO is not null
+			order by REPLY_CREATED_DATE asc
+		""";
+		
+		ArrayDeque<Reply> nestedReplies = new ArrayDeque<Reply>();
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, replyNo);
+		ResultSet rs = pstmt.executeQuery();
+		while (rs.next()) {
+			Reply reply = new Reply();
+			reply.setNo(rs.getInt("REPLY_NO"));
+			reply.setContent(rs.getString("REPLY_CONTENT"));
+			reply.setCreatedDate(rs.getDate("REPLY_CREATED_DATE"));
+			reply.setUpdatedDate(rs.getDate("REPLY_UPDATED_DATE"));
+			reply.setDepth(rs.getInt("REPLY_DEPTH"));
+			
+			User user = new User();
+			user.setName(rs.getString("USER_NAME"));
+			reply.setUser(user);
+			
+			nestedReplies.addLast(reply);
+		}
+		rs.close();
+		pstmt.close();
+		con.close();
+		
+		return nestedReplies;
+	}
+	
+	/**
+	 * 댓글번호로 댓글 불러오기
+	 * @param replyNo 댓글번호
+	 * @return 댓글
+	 * @throws SQLException
+	 */
 	public Reply getReplyByNo(int replyNo) throws SQLException {
 		String sql = """
 			select *
 			from STORE_BOARD_REPLYES
 			where reply_no = ?
+			and PARENT_REPLY_NO IS NULL;
 		""";
 		Reply reply = null;
 		
@@ -64,7 +120,7 @@ public class ReplyDao {
 	}
 	
 	/**
-	 * 게시글 번호를 전달받아서 해당 게시글의 모든 댓글을 조회해서 반환한다.
+	 * 게시글 번호를 전달받아서 해당 게시글의 부모 댓글을 조회해서 반환한다.
 	 * @param boardNo 게시글번호
 	 * @return 댓글 목록
 	 * @throws SQLException
@@ -79,6 +135,7 @@ public class ReplyDao {
 			FROM STORE_BOARD_REPLYES A, STORE_USERS B
 			WHERE BOARD_NO = ?
 			AND A.USER_NO = B.USER_NO
+			AND A.PARENT_REPLY_NO IS NULL
 			ORDER BY A.REPLY_NO ASC
 		""";
 		

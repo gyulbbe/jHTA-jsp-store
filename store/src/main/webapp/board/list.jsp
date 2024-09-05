@@ -91,7 +91,6 @@
 %>
 		</tbody>
 	</table>
-	
 <%
 	if (pagination.getTotalRows() > 0) {
 		int beginPage = pagination.getBeginPage();
@@ -106,7 +105,7 @@
 		for (int num = beginPage; num <= endPage; num++) {
 %>
 			<li class="page-item">
-				<a href="list.jsp?=<%=num %>" class="page-link <%=pageNo == num ? "active" : "" %>">1</a>
+				<a href="list.jsp?page=<%=num %>" class="page-link <%=pageNo == num ? "active" : "" %>"><%=num %></a>
 			</li>
 <%
 		}

@@ -16,6 +16,38 @@ import vo.User;
 public class ReplyDao {
 	
 	/**
+	 * 게시물번호를 받아서 그 게시물에 존재하는 루트 댓글의 갯수를 센다.
+	 * 페이징
+	 * @param boardNo
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getCountRootCommentByBoardNo(int boardNo) throws SQLException {
+		String sql = """
+			select count(*) as cnt
+			from STORE_BOARD_REPLYES
+			where BOARD_NO = ?
+			and PARENT_REPLY_NO is null
+		""";
+		
+		int count = 0;
+		
+		Connection con = ConnectionUtils.getConnection();
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, boardNo);
+		ResultSet rs = pstmt.executeQuery();
+		rs.next();
+		
+		count = rs.getInt(1);
+		
+		rs.close();
+		pstmt.close();
+		con.close();
+		
+		return count;
+	}
+	
+	/**
 	 * 부모 댓글 번호로 자식 댓글리스트 오름차순
 	 * @param replyNo
 	 * @return 대댓글
@@ -49,6 +81,7 @@ public class ReplyDao {
 			reply.setCreatedDate(rs.getDate("REPLY_CREATED_DATE"));
 			reply.setUpdatedDate(rs.getDate("REPLY_UPDATED_DATE"));
 			reply.setDepth(rs.getInt("REPLY_DEPTH"));
+			reply.setParentNo(rs.getInt("PARENT_REPLY_NO"));
 			
 			User user = new User();
 			user.setName(rs.getString("USER_NAME"));
@@ -120,23 +153,26 @@ public class ReplyDao {
 	}
 	
 	/**
-	 * 게시글 번호를 전달받아서 해당 게시글의 부모 댓글을 조회해서 반환한다.
+	 * 게시글 번호를 전달받아서 해당 게시글의 루트 댓글을 조회해서 반환한다.
+	 * 조회 범위에 맞는 루트 댓글 목록을 조회해서 반환한다.
 	 * @param boardNo 게시글번호
 	 * @return 댓글 목록
 	 * @throws SQLException
 	 */
-	public List<Reply> getReplyListByBoardNo(int boardNo) throws SQLException {
+	public List<Reply> getReplyListByBoardNo(int boardNo, int begin, int end) throws SQLException {
 		String sql = """
-			SELECT A.REPLY_NO
-					, A.REPLY_CONTENT
-					, A.REPLY_CREATED_DATE
-					, B.USER_NO
-					, B.USER_NAME
-			FROM STORE_BOARD_REPLYES A, STORE_USERS B
-			WHERE BOARD_NO = ?
-			AND A.USER_NO = B.USER_NO
-			AND A.PARENT_REPLY_NO IS NULL
-			ORDER BY A.REPLY_NO ASC
+			SELECT *
+			FROM(SELECT ROW_NUMBER() OVER (ORDER BY A.REPLY_NO ASC) ROW_NUM
+						, A.REPLY_NO
+						, A.REPLY_CONTENT
+						, A.REPLY_CREATED_DATE
+						, B.USER_NO
+						, B.USER_NAME
+				FROM STORE_BOARD_REPLYES A, STORE_USERS B
+				WHERE BOARD_NO = ?
+				AND A.USER_NO = B.USER_NO
+				AND A.PARENT_REPLY_NO IS NULL)
+			WHERE ROW_NUM BETWEEN ? AND ?
 		""";
 		
 		List<Reply> replies = new ArrayList<Reply>();
@@ -144,6 +180,8 @@ public class ReplyDao {
 		Connection con = ConnectionUtils.getConnection();
 		PreparedStatement pstmt = con.prepareStatement(sql);
 		pstmt.setInt(1, boardNo);
+		pstmt.setInt(2, begin);
+		pstmt.setInt(3, end);
 		ResultSet rs = pstmt.executeQuery();
 		while (rs.next()) {
 			Reply reply = new Reply();

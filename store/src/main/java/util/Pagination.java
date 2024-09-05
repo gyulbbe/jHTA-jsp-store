@@ -64,7 +64,7 @@ public class Pagination {
 	}
 	
 	/**
-	 * 현재 페이지번호에 맞는 페이지 내비게이션의 시작번호를 바노한한다.
+	 * 현재 페이지번호에 맞는 페이지 내비게이션의 시작번호를 반환한다.
 	 * @return 페이지 시작번호
 	 */
 	public int getBeginPage() {

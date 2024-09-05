@@ -1,3 +1,4 @@
+<%@page import="util.Pagination"%>
 <%@page import="java.util.ArrayDeque"%>
 <%@page import="util.NestedReply"%>
 <%@page import="vo.Reply"%>
@@ -176,7 +177,6 @@
 <%
 	}
 %>
-		
 	</div>
 <%
 	if (loginedUserId != null) {
@@ -196,9 +196,16 @@
 %>
 	
 <%
-	// 게시글의 댓글 조회하기
 	ReplyDao replyDao = new ReplyDao();
-	List<Reply> replyList = replyDao.getReplyListByBoardNo(board.getNo());
+	// default 페이지
+	int replyPageNo = Utils.toInt(request.getParameter("replyPage"), 1);
+	// 총 루트 댓글 수
+	int nestedReplyTotalRows = replyDao.getCountRootCommentByBoardNo(no);
+	// 페이징 세팅
+	Pagination replyPagination = new Pagination(replyPageNo, nestedReplyTotalRows);
+	
+	// 게시글의 댓글 조회하기
+	List<Reply> replyList = replyDao.getReplyListByBoardNo(board.getNo(), replyPagination.getBegin(), replyPagination.getEnd());
 %>
 	<div class="mt-3">
 <%
@@ -215,6 +222,7 @@
             <div>
                <span><%=reply.getUser().getName() %></span>
                <span><%=reply.getCreatedDate() %></span>
+               <span>댓글 번호: <%=reply.getNo() %></span>
             </div>
             <div>
 <%
@@ -256,15 +264,16 @@
         NestedReply nestedReply = new NestedReply();
         ArrayDeque<Reply> stack = nestedReply.getNestedReplies(reply.getNo());
         while (!stack.isEmpty()) {
-        	Reply nr = stack.pollLast();
-        	int moveRight = (nr.getDepth() - 1) * 20;
+        	Reply nr = stack.pollFirst();
 		%>
 	    	<!-- 대댓글 조회 -->
-	        <div class="nested-reply mt-2" style="margin-left: <%=moveRight%>px;">
+	        <div class="nested-reply mt-2" style="margin-left: <%=nr.getDepth()*20%>px;">
 	        	<div class="small d-flex justify-content-between">
 	            	<div>
 	                	<span><%=nr.getUser().getName() %></span>
 	                    <span><%=nr.getCreatedDate() %></span>
+	                    <span>부모 댓글 번호: <%=nr.getParentNo() %></span>
+	                    <span>깊이: <%=nr.getDepth() %></span>
 	                </div>
 	                <div>
 	                    <a href="#" class="btn btn-outline-dark btn-sm">수정</a>
@@ -290,8 +299,34 @@
 	</div>
 <%
 	}
+	if (replyPagination.getTotalRows() > 0) {
+		int beginPage = replyPagination.getBeginPage();
+		int endPage = replyPagination.getEndPage();
+%>
+	<div>
+		<ul class="pagination justify-content-center">
+			<li class="page-item <%=replyPagination.isFirst() ? "disabled" : "" %>">
+				<a href="detail.jsp?no=<%=no %>&replyPage=<%=replyPagination.getPrev() %>" class="page-link">이전</a>
+			</li>
+<%
+		for (int num = beginPage; num <= endPage; num++) {
+%>
+			<li class="page-item">
+				<a href="detail.jsp?no=<%=no %>&replyPage=<%=num %>" class="page-link <%=replyPageNo == num ? "active" : "" %>"><%=num %></a>
+			</li>
+<%
+		}
+%>
+			<li class="page-item <%=replyPagination.isLast() ? "disabled" : "" %>">
+				<a href="detail.jsp?no=<%=no %>&replyPage=<%=replyPagination.getNext() %>" class="page-link">다음</a>
+			</li>
+		</ul>
+	</div>
+<%
+	}
 %>
 </div>
+
 <script>
 function toggleNestedReplyForm(replyId) {
     var form = document.getElementById('nestedReplyForm' + replyId);

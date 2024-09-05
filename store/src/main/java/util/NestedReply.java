@@ -17,7 +17,7 @@ public class NestedReply {
 	 * @throws SQLException
 	 */
 	public ArrayDeque<Reply> getNestedReplies(int replyNo) throws SQLException {
-		// 부모 댓글 번호로 대댓글들 스택으로 받기
+		// 부모 댓글 번호로 대댓글들 스택 형태로 받기
 		ArrayDeque<Reply> tmp = replyDao.getNestedRepliesByReplyNo(replyNo);
 		while (!tmp.isEmpty()) {
 			last = tmp.pollLast();
